@@ -7,7 +7,7 @@ name = "hed-score"
 version = "0.1.0"
 description = "Hiremath Early Detection (HED) Score: a measure-theoretic metric for temporal early detection"
 readme = "README.md"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 authors = [
     { name = "Prakul Sunil Hiremath", email = "prakulhiremath@vtu.ac.in" }
 ]
