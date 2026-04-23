@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hed-score"
 version = "0.1.0"
-description = "Hiremath Early Detection (HED) Score: a measure-theoretic metric for temporal early detection"
-readme = "README.md"
+description = "Hiremath Early Detection (HED) Score: a time-aware evaluation metric for temporal early detection"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "Apache-2.0" }
 authors = [
     { name = "Prakul Sunil Hiremath", email = "prakulhiremath@vtu.ac.in" }
@@ -23,7 +23,7 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -35,6 +35,70 @@ classifiers = [
 requires-python = ">=3.9"
 
 # Minimal hard dependencies — HED core only requires numpy
+dependencies = [
+    "numpy>=1.23",
+]
+
+[project.optional-dependencies]
+# For running experiments and plotting
+experiments = [
+    "scikit-learn>=1.2",
+    "matplotlib>=3.6",
+    "pandas>=1.5",
+]
+# For deep learning models
+deep = [
+    "torch>=2.0",
+]
+# Everything
+all = [
+    "scikit-learn>=1.2",
+    "matplotlib>=3.6",
+    "pandas>=1.5",
+    "torch>=2.0",
+]
+# For development
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+    "build>=0.10",
+    "twine>=4.0",
+]
+
+[project.urls]
+Homepage       = "https://github.com/prakulhiremath/hed-score"
+Repository     = "https://github.com/prakulhiremath/hed-score"
+"Bug Tracker"  = "https://github.com/prakulhiremath/hed-score/issues"
+Paper          = "https://arxiv.org/abs/2604.04993"
+
+[tool.setuptools.packages.find]
+include = ["hed*"]
+
+[tool.setuptools.package-data]
+hed = ["py.typed"]
+
+# ---------------------------------------------------------------------------
+# Tool configurations
+# ---------------------------------------------------------------------------
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311"]
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--tb=short -q"# Minimal hard dependencies — HED core only requires numpy
 dependencies = [
     "numpy>=1.23",
 ]
