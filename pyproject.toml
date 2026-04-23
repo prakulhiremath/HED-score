@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hed-score"
 version = "0.1.0"
-description = "Hiremath Early Detection (HED) Score: a time-aware evaluation metric for temporal early detection"
-readme = { file = "README.md", content-type = "text/markdown" }
-license = { text = "Apache-2.0" }
+description = "Hiremath Early Detection (HED) Score: a measure-theoretic metric for temporal early detection"
+readme = "README.md"
+license = { text = "Apache 2.0" }
 authors = [
     { name = "Prakul Sunil Hiremath", email = "prakulhiremath@vtu.ac.in" }
 ]
@@ -23,7 +23,7 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: Apache 2.0",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -34,28 +34,30 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 
+# Minimal hard dependencies — HED core only requires numpy
 dependencies = [
     "numpy>=1.23",
 ]
 
 [project.optional-dependencies]
+# For running experiments and plotting
 experiments = [
     "scikit-learn>=1.2",
     "matplotlib>=3.6",
     "pandas>=1.5",
 ]
-
+# For LSTM model
 deep = [
     "torch>=2.0",
 ]
-
+# Everything
 all = [
     "scikit-learn>=1.2",
     "matplotlib>=3.6",
     "pandas>=1.5",
     "torch>=2.0",
 ]
-
+# For development
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -77,6 +79,10 @@ include = ["hed*"]
 
 [tool.setuptools.package-data]
 hed = ["py.typed"]
+
+# ---------------------------------------------------------------------------
+# Tool configurations
+# ---------------------------------------------------------------------------
 
 [tool.black]
 line-length = 88
