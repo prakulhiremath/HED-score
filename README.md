@@ -1,5 +1,10 @@
 # HED Score
 
+[![arXiv](https://img.shields.io/badge/arXiv-2604.04993-b31b1b.svg)](https://arxiv.org/abs/2604.04993)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713081.svg)](https://doi.org/10.5281/zenodo.19713081)
+[![PyPI version](https://img.shields.io/pypi/v/hed-score.svg)](https://pypi.org/project/hed-score/)
+[![Python](https://img.shields.io/pypi/pyversions/hed-score.svg)](https://pypi.org/project/hed-score/)
+
 **Hiremath Early Detection (HED) Score** — a measure-theoretic metric for evaluating early detection in time-series anomaly and regime-change tasks.
 
 > Hiremath, P. S. (2026). *The Hiremath Early Detection (HED) Score: A Measure-Theoretic Evaluation Standard for Temporal Intelligence.* arXiv:2604.04993 [stat.ML]
@@ -184,12 +189,13 @@ The HED Score satisfies three axiomatic requirements (proved in the paper):
 ## Citation
 
 ```bibtex
-@article{hiremath2026hed,
-  title   = {The Hiremath Early Detection ({HED}) Score:
-             A Measure-Theoretic Evaluation Standard for Temporal Intelligence},
-  author  = {Hiremath, Prakul Sunil},
-  journal = {arXiv preprint arXiv:2604.04993},
-  year    = {2026}
+@software{hiremath2026hed,
+  author       = {Prakul Sunil Hiremath},
+  title        = {HED Score: Hiremath Early Detection Metric},
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.19713081},
+  url          = {https://doi.org/10.5281/zenodo.19713081}
 }
 ```
 
