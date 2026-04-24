@@ -126,6 +126,9 @@ def hed_score_discrete(
     # Step 1: Baseline correction  (Axiom A2 — Invariance to Pre-Attack Bias)
     B = float(np.mean(P[:t_star])) if t_star > 0 else 0.0
     P_corrected = np.maximum(0.0, P - B)
+
+    # tiny numerical guard (keeps everything ≥ 0)
+    P_corrected = np.maximum(P_corrected, 0.0)
   
     # Step 2: Exponential decay kernel over post-shift window
     post_len = T - t_star                        # number of post-shift steps
