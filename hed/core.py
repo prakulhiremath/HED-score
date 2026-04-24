@@ -14,16 +14,17 @@ Given:
 
 The HED Score is:
 
-    HED(P, t*, λ) = Σ_{t = t*}^{T-1}  (P(t) - B)  ·  exp(-λ (t - t*))
+    HED(P, t*, λ) = Σ_{t = t*}^{T-1}  max(0, P(t) - B) · exp(-λ (t - t*))
 
 where B = mean(P[0 : t*]) is the *baseline* — the average probability
 before the shift.  Subtracting B makes the score invariant to
-pre-transition bias (Axiom A2 in the paper).
+pre-transition bias (Axiom A2 in the paper), while the max(0, ·)
+operator ensures that only positive post-shift deviations contribute.
 
 Interpretation
 --------------
 - HED > 0  : detector rises above its baseline after the shift.
-- HED = 0  : detector shows no post-shift improvement.
+- HED = 0  : detector shows no post-shift improvement or remains below baseline.
 - Higher λ : heavier penalty for late detection.
 - Lower  λ : closer to simple post-shift integral (like AUC).
 
