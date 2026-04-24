@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hed-score"
-version = "0.1.1"
+version = "0.1.2"
 description = "Hiremath Early Detection (HED) Score: a time-aware evaluation metric for temporal early detection"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "Apache-2.0" }
