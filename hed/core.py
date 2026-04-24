@@ -28,7 +28,7 @@ Interpretation
 - Lower  λ : closer to simple post-shift integral (like AUC).
 
 The normalised form divides by the *maximum achievable* HED for the
-same λ and T, so that scores live in (-1, 1] and are comparable
+same λ and T, so that scores live in [0, 1] and are comparable
 across different series lengths and decay constants.
 """
 
@@ -123,8 +123,9 @@ def hed_score_discrete(
     T = len(P)
 
     # Step 1: Baseline correction  (Axiom A2 — Invariance to Pre-Attack Bias)
-    P_corrected = baseline_correct(P, t_star)   # shape (T,)
-
+    B = float(np.mean(P[:t_star])) if t_star > 0 else 0.0
+    P_corrected = np.maximum(0.0, P - B)
+  
     # Step 2: Exponential decay kernel over post-shift window
     post_len = T - t_star                        # number of post-shift steps
     kernel = exponential_kernel(post_len, lam)   # exp(-λ * [0, 1, ..., T-t*-1])
