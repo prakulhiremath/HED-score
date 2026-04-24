@@ -190,7 +190,7 @@ def hed_score_continuous(
     t = np.arange(T, dtype=np.float64)
 
     B = float(np.mean(P[:t_star])) if t_star > 0 else 0.0
-    P_corrected = P - B
+    P_corrected = np.maximum(0.0, P - B)
 
     kernel = np.exp(-lam * (t - t_star))
     kernel[:t_star] = 0.0                        # zero out pre-shift window
