@@ -1,0 +1,16 @@
+Exp,Category,Detector / Condition,AUC,HED,TTD,Notes
+1,Controlled,Fast,1.0000,0.4014,0,—
+1,Controlled,Slow (80-step),1.0000,0.1400,80,—
+2,Gradual/Delayed,Gradual,1.0000,0.1864,0,—
+2,Gradual/Delayed,Delayed-50,1.0000,0.0799,50,—
+3,Noisy Trade-off,Noisy Early,0.9950,0.1976,0,—
+3,Noisy Trade-off,Clean Late,1.0000,0.0881,40,—
+4,Real Benchmark,Rolling Z-score,0.4674,0.1022,0,✓ real data
+4,Real Benchmark,Isolation Forest,0.7727,0.8784,0,✓ real data
+5/9,Adversarial,Spike-at-t*,0.505,0.0952,0,failure mode
+6,Robustness (N=50),Early μ±σ,0.9954±0.0041,0.1914±0.0201,—,p=1.71e-29
+6,Robustness (N=50),Late  μ±σ,0.9752±0.0111,0.0972±0.0166,—,Cohen d=4.695
+7,λ Sensitivity,Reversal count,—,—,—,3 reversals
+8,t* Sensitivity,Max |ΔHED| at ±5,—,0.0447,—,max Δ=197.8%
+9B,Non-stat. baseline,Drifting baseline,1.0,0.322,—,failure mode
+11,Monotonicity,"Spearman(delay,HED)",—,ρ=-1.0000,—,p=0.00e+00
