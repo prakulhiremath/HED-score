@@ -31,9 +31,9 @@ from .core import hed_score, hed_score_discrete, hed_score_continuous
 from .metrics import auc_score, far_at_threshold, hed_far_curve
 from .utils import baseline_correct, exponential_kernel, smooth_probabilities
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Prakul Sunil Hiremath"
-__license__ = "MIT"
+__license__ = "Apache 2.0"
 
 __all__ = [
     # Core HED
