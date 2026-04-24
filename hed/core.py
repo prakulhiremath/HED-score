@@ -67,7 +67,7 @@ def hed_score(
           - General / exploratory : 0.1
     normalise : bool, default True
         If True, divide by the maximum achievable HED so the score
-        lives in (-inf, 1].  A perfect detector scoring 1 means it
+        lives in [0, 1].  A perfect detector scoring 1 means it
         output P(t) = 1 for all t >= t_star.
 
     Returns
