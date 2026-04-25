@@ -3,6 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2604.04993-b31b1b.svg)](https://arxiv.org/abs/2604.04993)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713081.svg)](https://doi.org/10.5281/zenodo.19713081)
 [![PyPI](https://img.shields.io/pypi/v/hed-score.svg)](https://pypi.org/project/hed-score/)
+[![Medium](https://img.shields.io/badge/Medium-Read%20Article-black)](https://medium.com/@prakulhiremath/the-temporal-blind-spot-in-model-evaluation-e63dda033960)
 
 **Hiremath Early Detection (HED) Score** — a measure-theoretic metric for evaluating early detection in time-series anomaly and regime-change tasks.
 
