@@ -1,6 +1,6 @@
 # HED Score
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1cCKMy7SEvXiYg0-pHdKRxDORsg1kMD7A?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1NPeTQCfd7SG4AAtcRY1IIaw_f7U2VS_Z?usp=sharing)
 [![arXiv](https://img.shields.io/badge/arXiv-2604.04993-b31b1b.svg)](https://arxiv.org/abs/2604.04993)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713081.svg)](https://doi.org/10.5281/zenodo.19713081)
 [![PyPI](https://img.shields.io/pypi/v/hed-score.svg)](https://pypi.org/project/hed-score/)
