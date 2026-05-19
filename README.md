@@ -147,32 +147,159 @@ pytest tests/ -v
 ## Repository structure
 
 ```
-hed-score/
-├── hed/
-│   ├── __init__.py       # Public API
-│   ├── core.py           # HED implementation (discrete + continuous)
-│   ├── utils.py          # Baseline correction, kernel, smoothing
-│   └── metrics.py        # AUC, FAR, HED-FAR curve
-├── experiments/
-│   ├── synthetic_shift.py  # Key demo: same AUC, different HED
-│   ├── nsl_kdd.py          # Cyber-intrusion detection
-│   └── financial_ts.py     # Market regime change
-├── models/
-│   ├── rf.py               # Random Forest detector
-│   ├── lstm.py             # LSTM detector
-│   └── pard_ssm.py         # PARD-SSM placeholder
-├── plots/
-│   ├── hed_vs_auc.py       # Main comparison figure
-│   └── far_hed_curve.py    # FAR–HED curve
-├── data/
-│   └── download.py         # Dataset download scripts
-├── tests/
-│   ├── test_core.py
-│   └── test_metrics.py
-├── notebooks/
-│   └── demo.ipynb
+repo-root/
+├── README.md
+├── LICENSE
 ├── pyproject.toml
-└── requirements.txt
+├── requirements.txt
+├── .gitignore
+├── docs/
+│   ├── architecture.md          # Overall framework design
+│   ├── metric_theory.md         # HED formulation & derivation
+│   ├── benchmark_protocol.md    # Evaluation methodology
+│   └── contributing.md
+│
+├── hed-score/
+│   ├── README.md
+│   ├── pyproject.toml
+│   ├── hed/
+│   │   ├── __init__.py          # Public API
+│   │   ├── core.py              # HED discrete/continuous implementations
+│   │   ├── kernels.py           # Temporal kernels
+│   │   ├── smoothing.py         # Smoothing operators
+│   │   ├── baseline.py          # Baseline correction
+│   │   ├── metrics.py           # FAR, AUC, HED-FAR curve
+│   │   ├── calibration.py       # Threshold calibration
+│   │   ├── streaming.py         # Online/streaming evaluation
+│   │   └── visualization.py     # Metric plotting helpers
+│   │
+│   ├── tests/
+│   │   ├── test_core.py
+│   │   ├── test_metrics.py
+│   │   ├── test_streaming.py
+│   │   └── test_calibration.py
+│   │
+│   ├── notebooks/
+│   │   ├── metric_demo.ipynb
+│   │   └── hed_vs_auc.ipynb
+│   │
+│   └── examples/
+│       ├── minimal_example.py
+│       └── streaming_example.py
+│
+├── hed-bench/
+│   ├── README.md
+│   ├── benchmark.py             # Main benchmark runner
+│   ├── leaderboard.py           # Aggregate benchmark results
+│   ├── configs/
+│   │   ├── cyber.yaml
+│   │   ├── finance.yaml
+│   │   ├── sensor.yaml
+│   │   └── streaming.yaml
+│   │
+│   ├── datasets/
+│   │   ├── download.py
+│   │   ├── preprocess.py
+│   │   ├── loaders/
+│   │   │   ├── nsl_kdd.py
+│   │   │   ├── unsw_nb15.py
+│   │   │   ├── cicids.py
+│   │   │   ├── financial_ts.py
+│   │   │   └── synthetic_shift.py
+│   │   │
+│   │   └── synthetic/
+│   │       ├── drift_generator.py
+│   │       └── poisoning_generator.py
+│   │
+│   ├── baselines/
+│   │   ├── rf.py
+│   │   ├── xgboost.py
+│   │   ├── lstm.py
+│   │   ├── transformer.py
+│   │   ├── ssm.py
+│   │   └── statistical.py
+│   │
+│   ├── experiments/
+│   │   ├── auc_failure_case.py
+│   │   ├── delayed_detection.py
+│   │   ├── adversarial_drift.py
+│   │   ├── slow_poisoning.py
+│   │   ├── regime_shift.py
+│   │   └── streaming_intrusion.py
+│   │
+│   ├── evaluation/
+│   │   ├── scorer.py
+│   │   ├── latency.py
+│   │   ├── robustness.py
+│   │   ├── calibration.py
+│   │   └── reporting.py
+│   │
+│   ├── plots/
+│   │   ├── hed_vs_auc.py
+│   │   ├── far_hed_curve.py
+│   │   ├── latency_tradeoff.py
+│   │   └── robustness_heatmap.py
+│   │
+│   ├── results/
+│   │   ├── tables/
+│   │   ├── figures/
+│   │   └── raw/
+│   │
+│   ├── tests/
+│   │   ├── test_benchmark.py
+│   │   ├── test_datasets.py
+│   │   └── test_evaluation.py
+│   │
+│   └── notebooks/
+│       ├── benchmark_demo.ipynb
+│       ├── cyber_eval.ipynb
+│       └── finance_eval.ipynb
+│
+├── pard-ssm/
+│   ├── README.md
+│   ├── pard_ssm/
+│   │   ├── __init__.py
+│   │   ├── model.py             # Core PARD-SSM architecture
+│   │   ├── layers.py
+│   │   ├── state_update.py
+│   │   ├── memory.py
+│   │   ├── attention.py
+│   │   └── training.py
+│   │
+│   ├── configs/
+│   │   ├── base.yaml
+│   │   ├── cyber.yaml
+│   │   └── finance.yaml
+│   │
+│   ├── experiments/
+│   │   ├── intrusion_detection.py
+│   │   ├── temporal_robustness.py
+│   │   └── low_latency_eval.py
+│   │
+│   ├── checkpoints/
+│   │
+│   ├── tests/
+│   │   ├── test_model.py
+│   │   └── test_training.py
+│   │
+│   └── notebooks/
+│       └── pard_demo.ipynb
+│
+└── papers/
+    ├── hed_score/
+    │   ├── main.tex
+    │   ├── figures/
+    │   └── bibliography.bib
+    │
+    ├── hed_bench/
+    │   ├── main.tex
+    │   ├── figures/
+    │   └── bibliography.bib
+    │
+    └── pard_ssm/
+        ├── main.tex
+        ├── figures/
+        └── bibliography.bib
 ```
 
 ---
