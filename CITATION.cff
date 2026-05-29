@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software or the HED Score framework in your work, please cite it using the metadata from this file."
+authors:
+  - family-names: "Hiremath"
+    given-names: "Prakul Sunil"
+    email: "prakulhiremath03@gmail.com"
+title: "HED Score: Hiremath Early Detection Metric"
+version: "1.0.0" # Update this to reflect your actual current release version if different
+doi: "10.5281/zenodo.19713081"
+date-released: "2026-04-20" # Update to the exact release date if known
+url: "https://github.com/prakulhiremath/hed-score"
+repository-code: "https://github.com/prakulhiremath/hed-score"
+license: "Apache-2.0"
+keywords:
+  - "temporal intelligence"
+  - "early detection"
+  - "anomaly detection"
+  - "evaluation metric"
+  - "time-series"
+  - "measure-theory"
+
+references:
+  - type: article
+    authors:
+      - family-names: "Hiremath"
+        given-names: "Prakul Sunil"
+    title: "The Hiremath Early Detection (HED) Score: A Measure-Theoretic Evaluation Standard for Temporal Intelligence"
+    journal: "arXiv preprint arXiv:2604.04993"
+    year: 2026
+    url: "https://arxiv.org/abs/2604.04993"
