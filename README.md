@@ -4,11 +4,13 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1NPeTQCfd7SG4AAtcRY1IIaw_f7U2VS_Z?usp=sharing)
 [![arXiv](https://img.shields.io/badge/arXiv-2604.04993-b31b1b.svg)](https://arxiv.org/abs/2604.04993)
+[![SSRN](https://img.shields.io/badge/SSRN-6787359-darkblue.svg)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6787359)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19713081.svg)](https://doi.org/10.5281/zenodo.19713081)
 [![PyPI](https://img.shields.io/pypi/v/hed-score.svg)](https://pypi.org/project/hed-score/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Medium](https://img.shields.io/badge/Medium-Read%20Article-black)](https://medium.com/@prakulhiremath/the-temporal-blind-spot-in-model-evaluation-e63dda033960)
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/hed-score?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/hed-score)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/hed-score?period=total\&units=INTERNATIONAL_SYSTEM\&left_color=BLACK\&right_color=GREEN\&left_text=downloads)](https://pepy.tech/projects/hed-score)
+
 
 
 **A measure-theoretic evaluation standard for temporal intelligence.**
