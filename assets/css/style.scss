@@ -1,0 +1,30 @@
+---
+---
+@import "{{ site.theme }}";
+
+/* Custom high-contrast layout formatting for the framework */
+blockquote {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-left: 4px solid #38bdf8 !important;
+  padding: 1.5rem !important;
+  border-radius: 6px;
+  font-family: Georgia, serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #f6f8fa;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+pre, code {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-radius: 6px;
+}
