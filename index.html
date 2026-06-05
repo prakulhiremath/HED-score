@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HED Score — Measure-Theoretic Evaluation for Temporal Intelligence</title>
+    <meta name="description" content="The first formally axiomatized metric that treats detection timing as a first-class property. For systems where when you detect matters as much as whether you detect.">
+    
+    <!-- Tailwind CSS via CDN -->
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- System fonts configuration -->
+    <style>
+        :root {
+            --accent: #0284c7;
+            --accent-light: #38bdf8;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+        }
+
+        .font-display {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Math rendering styles */
+        .math-block {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .math-inline {
+            font-family: 'Cambria Math', serif;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .code-keyword { color: #818cf8; }
+        .code-string { color: #86efac; }
+        .code-number { color: #fbbf24; }
+        .code-function { color: #60a5fa; }
+        .code-comment { color: #64748b; }
+
+        /* Comparison grid */
+        .comparison-cell {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-cell:hover {
+            background: #f1f5f9;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+
+        .badge:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(2, 132, 199, 0.05);
+        }
+
+        /* Timeline visualization */
+        .timeline-bar {
+            height: 2rem;
+            background: linear-gradient(90deg, #e2e8f0 0%, var(--accent-light) 50%, #0284c7 100%);
+            border-radius: 0.25rem;
+            position: relative;
+        }
+
+        .timeline-label {
+            position: absolute;
+            top: -1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .timeline-onset {
+            position: absolute;
+            top: -2.5rem;
+            left: 33%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ef4444;
+        }
+
+        /* Interactive slider */
+        .slider-container {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.5);
+        }
+
+        /* Stat box */
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+        }
+
+        .stat-box .value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Courier New', monospace;
+        }
+
+        .stat-box .label {
+            font-size: 0.875rem;
+            color: #475569;
+            margin-top: 0.5rem;
+        }
+
+        /* Section divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            margin: 4rem 0;
+        }
+
+        /* Axiom highlight */
+        .axiom-box {
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(56, 189, 248, 0.05) 100%);
+            border-left: 3px solid var(--accent);
+            padding: 2rem;
+            border-radius: 0.375rem;
+            margin: 2rem 0;
+        }
+
+        .axiom-box h3 {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 6rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hero-accent {
+            color: var(--accent);
+        }
+
+        /* Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section h3 {
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        /* CTA Button */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border: 1px solid var(--accent);
+        }
+
+        .btn:hover {
+            background: #0369a1;
+            border-color: #0369a1;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: rgba(2, 132, 199, 0.1);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* SVG styling */
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    <!-- Navigation + Hero -->
+    <div class="hero">
+        <div class="max-w-6xl mx-auto px-6 sm:px-8">
+            <!-- Badges -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <a href="https://colab.research.google.com/drive/1NPeTQCfd7SG4AAtcRY1IIaw_f7U2VS_Z?usp=sharing" class="badge" target="_blank" rel="noopener">
+                    📓 Open in Colab
+                </a>
+                <a href="https://arxiv.org/abs/2604.04993" class="badge" target="_blank" rel="noopener">
+                    📄 arXiv:2604.04993
+                </a>
+                <a href="https://pypi.org/project/hed-score/" class="badge" target="_blank" rel="noopener">
+                    📦 PyPI
+                </a>
+                <a href="https://doi.org/10.5281/zenodo.19713081" class="badge" target="_blank" rel="noopener">
+                    🔬 Zenodo
+                </a>
+                <a href="https://medium.com/@prakulhiremath/the-temporal-blind-spot-in-model-evaluation-e63dda033960" class="badge" target="_blank" rel="noopener">
+                    ✍️ Medium Article
+                </a>
+            </div>
+
+            <!-- Hero Content -->
+            <div class="max-w-3xl">
+                <h1 class="text-5xl sm:text-6xl font-display font-bold mb-6 text-slate-900">
+                    HED Score
+                </h1>
+                <p class="text-xl text-slate-600 mb-2 font-display font-semibold">
+                    Hiremath Early Detection Score
+                </p>
+                <p class="text-2xl font-display font-semibold mb-8">
+                    <span class="text-slate-700">A measure-theoretic evaluation standard for</span>
+                    <span class="hero-accent"> temporal intelligence</span>
+                </p>
+                <p class="text-lg text-slate-600 mb-8 max-w-2xl leading-relaxed">
+                    The first formally axiomatized metric that treats <strong>detection timing</strong> as a first-class property alongside correctness. For systems where <em>when</em> you detect matters as much as <em>whether</em> you detect.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="#quickstart" class="btn">Get Started</a>
+                    <a href="https://github.com/prakulhiremath/hed-score" class="btn btn-outline" target="_blank" rel="noopener">
+                        View on GitHub →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Insight -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <div class="bg-slate-50 border-l-4 border-blue-600 p-8 rounded-sm">
+            <p class="text-lg text-slate-800 italic font-semibold mb-2">
+                "Your model achieved AUROC = 1.0. It was still operationally useless. This is not a paradox. It is the default behavior of every standard evaluation framework applied to time-critical systems."
+            </p>
+            <p class="text-sm text-slate-600">
+                — Hiremath, P. S. (2026). <em>The HED Score: A Measure-Theoretic Evaluation Standard for Temporal Intelligence.</em> arXiv:2604.04993
+            </p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- The Problem Section -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>The Problem No One Has Formally Named — Until Now</h2>
+        
+        <p>
+            Every production ML team running anomaly detection, regime change detection, or early-warning systems uses the same evaluation pipeline: compute AUROC, check F1, ship the model.
+        </p>
+
+        <p>
+            There is a <strong>structural flaw</strong> baked into this process that has persisted unaddressed for decades.
+        </p>
+
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded my-8">
+            <p class="font-semibold text-slate-900 mb-2">The Core Issue</p>
+            <p class="text-slate-700">
+                <strong>Standard metrics are temporally agnostic.</strong> They assign identical credit to a detection that fires at <code class="bg-slate-200 px-2 py-1 rounded text-sm">t* + 1</code> and a detection that fires at <code class="bg-slate-200 px-2 py-1 rounded text-sm">t* + 100</code>. Two detectors with identical AUROC scores can have radically different operational behavior—one saving the system, one watching it fail.
+            </p>
+        </div>
+
+        <p>
+            <strong>The HED Score was built to close this gap.</strong> It is the first evaluation metric with a time parameter.
+        </p>
+
+        <h3>Why AUC Collapses in Production</h3>
+
+        <p>
+            The Area Under the ROC Curve is defined as:
+        </p>
+
+        <div class="math-block">
+            $$\text{AUC} = \int_0^1 \text{TPR}(t) \, d(\text{FPR}(t))$$
+        </div>
+
+        <p>
+            This integral aggregates classifier performance across all decision thresholds. It is a powerful measure of <strong>ranking quality</strong>—how well a model separates positive from negative cases over a <em>static</em> sample.
+        </p>
+
+        <p>
+            <strong>The structural limitation:</strong> AUC is defined over a label set $\{y_i, \hat{p}_i\}_{i=1}^{N}$ where the index $i$ carries no temporal semantics. The computation treats $i=1$ and $i=N$ as exchangeable. Formally, for any permutation $\sigma$ of the index set:
+        </p>
+
+        <div class="math-block">
+            $$\text{AUC}(\{y_i, \hat{p}_i\}) = \text{AUC}(\{y_{\sigma(i)}, \hat{p}_{\sigma(i)}\})$$
+        </div>
+
+        <p>
+            <strong>This means AUC is invariant to the temporal ordering of predictions.</strong> In a system where the cost of latency is operationally catastrophic, this is not a limitation. <em>It is a disqualification.</em>
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- The Divergence Map -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>The Divergence: Why AUC Fails While HED Succeeds</h2>
+
+        <p>Below: three canonical detector behavior paradigms. Identical AUROC range. Three completely different operational outcomes. Standard metrics cannot tell them apart. HED can.</p>
+
+        <!-- Comparison Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 my-12">
+            <!-- Immediate Jump -->
+            <div class="comparison-cell">
+                <h3 class="font-bold text-slate-900 mb-4">Immediate Jump</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">AUROC</p>
+                        <p class="text-2xl font-bold text-slate-900">0.92</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">HED Score</p>
+                        <p class="text-2xl font-bold hero-accent">0.87</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-700"><strong>Outcome:</strong> Alarm fires at <code class="text-xs bg-green-100 px-1.5 py-0.5 rounded">t* + 1</code></p>
+                        <p class="text-sm text-green-700 font-semibold mt-2">✓ System protected</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Linear Ramp -->
+            <div class="comparison-cell">
+                <h3 class="font-bold text-slate-900 mb-4">Linear Ramp</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">AUROC</p>
+                        <p class="text-2xl font-bold text-slate-900">0.90</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">HED Score</p>
+                        <p class="text-2xl font-bold text-amber-600">0.51</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-700"><strong>Outcome:</strong> Ramps over 60 steps</p>
+                        <p class="text-sm text-amber-700 font-semibold mt-2">~ Partial protection</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step-Delayed -->
+            <div class="comparison-cell">
+                <h3 class="font-bold text-slate-900 mb-4">Step-Delayed</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">AUROC</p>
+                        <p class="text-2xl font-bold text-slate-900">0.91</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">HED Score</p>
+                        <p class="text-2xl font-bold text-red-600">0.23</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-200">
+                        <p class="text-sm text-slate-700"><strong>Outcome:</strong> Fires at <code class="text-xs bg-red-100 px-1.5 py-0.5 rounded">t* + 40</code></p>
+                        <p class="text-sm text-red-700 font-semibold mt-2">✗ Breach complete</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 p-8 rounded-sm border border-slate-200 my-8">
+            <p class="text-sm font-semibold text-slate-600 uppercase mb-6">Timeline Comparison</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <p class="text-xs font-bold text-slate-500 mb-2">Immediate Jump (AUC=0.92, HED=0.87)</p>
+                    <svg viewBox="0 0 400 40" class="w-full" style="min-height: 60px;">
+                        <text x="0" y="15" font-size="11" fill="#64748b" font-weight="bold">t*</text>
+                        <line x1="20" y1="20" x2="20" y2="35" stroke="#ef4444" stroke-width="2"/>
+                        <rect x="20" y="20" width="350" height="15" fill="#10b981" opacity="0.7"/>
+                        <text x="330" y="50" font-size="10" fill="#10b981" font-weight="bold">✓</text>
+                    </svg>
+                </div>
+
+                <div>
+                    <p class="text-xs font-bold text-slate-500 mb-2">Linear Ramp (AUC=0.90, HED=0.51)</p>
+                    <svg viewBox="0 0 400 40" class="w-full" style="min-height: 60px;">
+                        <text x="0" y="15" font-size="11" fill="#64748b" font-weight="bold">t*</text>
+                        <line x1="20" y1="20" x2="20" y2="35" stroke="#ef4444" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="ramp" x1="0%" x2="100%">
+                                <stop offset="0%" style="stop-color:#94a3b8;stop-opacity:0.3" />
+                                <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:0.7" />
+                                <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="20" y="20" width="350" height="15" fill="url(#ramp)"/>
+                        <text x="330" y="50" font-size="10" fill="#f59e0b" font-weight="bold">~</text>
+                    </svg>
+                </div>
+
+                <div>
+                    <p class="text-xs font-bold text-slate-500 mb-2">Step-Delayed (AUC=0.91, HED=0.23)</p>
+                    <svg viewBox="0 0 400 40" class="w-full" style="min-height: 60px;">
+                        <text x="0" y="15" font-size="11" fill="#64748b" font-weight="bold">t*</text>
+                        <line x1="20" y1="20" x2="20" y2="35" stroke="#ef4444" stroke-width="2"/>
+                        <rect x="20" y="20" width="240" height="15" fill="#cbd5e1" opacity="0.5"/>
+                        <rect x="260" y="20" width="110" height="15" fill="#ef4444" opacity="0.7"/>
+                        <text x="330" y="50" font-size="10" fill="#ef4444" font-weight="bold">✗</text>
+                        <text x="90" y="60" font-size="9" fill="#64748b" font-weight="600">← BLIND ZONE →</text>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-600 mt-8 pt-4 border-t border-slate-300">
+                <strong>The blind zone:</strong> All three detectors are statistically indistinguishable under AUC. They are operationally non-equivalent under any real-world deployment where time matters. HED separates them. AUC cannot.
+            </p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- The HED Framework -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>The HED Framework: Mathematical Formulation</h2>
+
+        <h3>Discrete Formulation</h3>
+
+        <p>For a discrete probability stream $P = \{P(t)\}_{t=0}^{T-1}$, a known onset $t^*$, and decay constant $\lambda > 0$:</p>
+
+        <div class="math-block">
+            $$\boxed{\text{HED}(P,\, t^*,\, \lambda) = \sum_{t=t^*}^{T-1} \bigl(P(t) - B\bigr) \cdot \exp\!\bigl(-\lambda\,(t - t^*)\bigr)}$$
+        </div>
+
+        <div class="bg-slate-50 p-6 rounded my-8 border border-slate-200">
+            <p class="font-semibold text-slate-900 mb-4">Components</p>
+            <ul class="space-y-3 text-slate-700">
+                <li><code class="bg-white px-2 py-1 rounded text-sm">P(t)</code> — Posterior probability of the anomalous regime at timestep <code class="bg-white px-2 py-1 rounded text-sm">t</code></li>
+                <li><code class="bg-white px-2 py-1 rounded text-sm">t*</code> — True onset timestep of the regime shift (change point)</li>
+                <li><code class="bg-white px-2 py-1 rounded text-sm">B</code> — Baseline correction: $B = \frac{1}{t^*} \sum_{t=0}^{t^*-1} P(t)$ (prevents false-alarm inflation)</li>
+                <li><code class="bg-white px-2 py-1 rounded text-sm">λ</code> — Hiremath Decay Constant (domain-specific latency tolerance)</li>
+            </ul>
+        </div>
+
+        <h3>The Hiremath Decay Constant λ</h3>
+
+        <p>
+            The decay constant $\lambda$ encodes domain-specific latency tolerance. It governs how aggressively late detections are penalized:
+        </p>
+
+        <div class="math-block">
+            $$w(t) = \exp\!\bigl(-\lambda\,(t - t^*)\bigr)$$
+        </div>
+
+        <!-- Interactive Lambda Widget -->
+        <div class="slider-container my-8">
+            <div class="flex justify-between items-baseline mb-6">
+                <h3 class="text-lg font-semibold text-slate-900">Decay Constant Explorer</h3>
+                <div class="text-right">
+                    <p class="text-sm text-slate-600 mb-1">Current λ</p>
+                    <p class="text-3xl font-bold hero-accent font-mono" id="lambda-display">0.10</p>
+                </div>
+            </div>
+
+            <input type="range" id="lambda-slider" min="0.01" max="0.30" step="0.01" value="0.10" class="mb-8">
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="stat-box">
+                    <p class="label">Δt = 5</p>
+                    <p class="value" id="decay-5">0.607</p>
+                </div>
+                <div class="stat-box">
+                    <p class="label">Δt = 10</p>
+                    <p class="value" id="decay-10">0.368</p>
+                </div>
+                <div class="stat-box">
+                    <p class="label">Δt = 20</p>
+                    <p class="value" id="decay-20">0.135</p>
+                </div>
+                <div class="stat-box">
+                    <p class="label">Δt = 40</p>
+                    <p class="value" id="decay-40">0.018</p>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-white border border-slate-200 rounded text-sm text-slate-600">
+                <p id="lambda-description" class="font-semibold text-slate-700 mb-2">λ = 0.10 — Balanced default</p>
+                <p id="lambda-use-case">Suitable for infrastructure and general anomaly detection.</p>
+            </div>
+        </div>
+
+        <!-- Lambda reference table -->
+        <div class="my-12">
+            <h3>Domain-Specific λ Recommendations</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>λ</th>
+                        <th>Max Tolerable Lag</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cyber-physical security</td>
+                        <td><code>0.30</code></td>
+                        <td>&lt; 5 steps</td>
+                        <td>Every second of lag is a breach in progress</td>
+                    </tr>
+                    <tr>
+                        <td>Algorithmic surveillance</td>
+                        <td><code>0.20</code></td>
+                        <td>&lt; 10 steps</td>
+                        <td>Market regime shifts are rapid and costly</td>
+                    </tr>
+                    <tr>
+                        <td>Infrastructure monitoring</td>
+                        <td><code>0.10</code></td>
+                        <td>&lt; 20 steps</td>
+                        <td>Controlled shutdown windows require early warning</td>
+                    </tr>
+                    <tr>
+                        <td>Epidemiological monitoring</td>
+                        <td><code>0.05</code></td>
+                        <td>&lt; 50 steps</td>
+                        <td>Slower-moving phenomena, longer intervention horizon</td>
+                    </tr>
+                    <tr>
+                        <td>Biological systems (growth)</td>
+                        <td><code>0.03</code></td>
+                        <td>&lt; 100 steps</td>
+                        <td>Ecological transitions are gradual</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Axioms -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>Axiomatic Foundations</h2>
+
+        <p>
+            The HED Score satisfies three formally proved axioms. These are not design aspirations—they are mathematical guarantees proved in the <a href="https://arxiv.org/abs/2604.04993" target="_blank" rel="noopener" class="text-blue-600 hover:underline font-semibold">accompanying paper</a>.
+        </p>
+
+        <!-- Axiom A1 -->
+        <div class="axiom-box">
+            <h3>A1 — Temporal Monotonicity</h3>
+            <p class="text-sm text-slate-700 mb-4">
+                <strong>Guarantee:</strong> Detecting earlier is always rewarded. There is no parameter configuration under which a delayed detection scores higher than an earlier detection of equivalent quality.
+            </p>
+            <div class="math-block text-sm bg-blue-50 border-l-4 border-blue-500">
+                $$\text{HED}(P_a, t^*, \lambda) > \text{HED}(P_b, t^*, \lambda) \quad \forall\, \lambda > 0$$
+            </div>
+            <p class="text-sm text-slate-700">
+                <strong>Why classic metrics collapse here:</strong> AUC is invariant to temporal ordering by construction. A metric that satisfies temporal monotonicity cannot be AUC-equivalent. The axioms are mutually exclusive.
+            </p>
+        </div>
+
+        <!-- Axiom A2 -->
+        <div class="axiom-box">
+            <h3>A2 — Invariance to Pre-Attack Bias</h3>
+            <p class="text-sm text-slate-700 mb-4">
+                <strong>Guarantee:</strong> The score is completely insensitive to the detector's systematic false-alarm rate before the regime shift.
+            </p>
+            <div class="math-block text-sm bg-blue-50 border-l-4 border-blue-500">
+                $$\text{HED}(P_a, t^*, \lambda) = \text{HED}(P_b, t^*, \lambda)$$
+            </div>
+            <p class="text-sm text-slate-700">
+                <strong>Operational significance:</strong> This prevents adversarial evaluation gaming where a model achieves high early-detection scores simply by maintaining permanently elevated output. HED measures genuine post-onset response, not pre-event noise.
+            </p>
+        </div>
+
+        <!-- Axiom A3 -->
+        <div class="axiom-box">
+            <h3>A3 — Sensitivity Decomposability</h3>
+            <p class="text-sm text-slate-700 mb-4">
+                <strong>Guarantee:</strong> Individual failure modes are diagnosable. A low HED score reveals whether the model is failing on detection confidence, detection timing, or pre-event calibration.
+            </p>
+            <p class="text-sm text-slate-700">
+                <strong>Why this matters:</strong> A single scalar metric that cannot be decomposed is an oracle, not a diagnostic tool. A3 makes HED a <em>diagnostic instrument</em> for targeted architectural improvements.
+            </p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Installation & Quickstart -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section" id="quickstart">
+        <h2>Installation & Quickstart</h2>
+
+        <h3>Installation</h3>
+
+        <div class="code-block mb-8">pip install hed-score</div>
+
+        <p>With experiment and benchmarking dependencies:</p>
+
+        <div class="code-block mb-8">pip install "hed-score[experiments]"</div>
+
+        <p><strong>Requirements:</strong> Python ≥ 3.10, NumPy ≥ 1.24, PyTorch ≥ 2.1 (optional)</p>
+
+        <h3>Production Example: Comparing the Three Detectors</h3>
+
+        <div class="code-block mb-8"><span class="code-comment"># Import and create synthetic detectors</span>
+<span class="code-keyword">from</span> hed <span class="code-keyword">import</span> hed_score
+<span class="code-keyword">from</span> hed.metrics <span class="code-keyword">import</span> auc_score
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np
+
+<span class="code-comment"># Create three canonical detector paradigms</span>
+n_steps = <span class="code-number">300</span>
+onset = <span class="code-number">100</span>
+lam = <span class="code-number">0.10</span>
+
+<span class="code-comment"># Ground truth</span>
+labels = np.zeros(n_steps)
+labels[onset:] = <span class="code-number">1</span>
+
+<span class="code-comment"># Detector 1: Immediate Jump</span>
+immediate = np.zeros(n_steps)
+immediate[onset:] = np.linspace(<span class="code-number">0</span>, <span class="code-number">0.90</span>, n_steps - onset) ** <span class="code-number">0.1</span>
+
+<span class="code-comment"># Detector 2: Linear Ramp</span>
+ramp = np.zeros(n_steps)
+ramp[onset:] = np.linspace(<span class="code-number">0</span>, <span class="code-number">0.90</span>, n_steps - onset)
+
+<span class="code-comment"># Detector 3: Step-Delayed</span>
+delayed = np.zeros(n_steps)
+delayed[onset + <span class="code-number">40</span>:] = <span class="code-number">0.90</span>
+
+<span class="code-comment"># Evaluate</span>
+detectors = {
+    <span class="code-string">"Immediate Jump"</span>: immediate,
+    <span class="code-string">"Linear Ramp"</span>: ramp,
+    <span class="code-string">"Step-Delayed"</span>: delayed,
+}
+
+<span class="code-keyword">for</span> name, prob in detectors.items():
+    hed = hed_score(prob, t_star=onset, lam=lam)
+    auc = auc_score(prob, labels)
+    <span class="code-function">print</span>(<span class="code-string">f"{name:20} AUROC={auc:.3f}  HED={hed:.3f}"</span>)</div>
+
+        <div class="bg-slate-900 text-slate-100 p-6 rounded font-mono text-sm border border-slate-700 mb-8">
+            <p>Immediate Jump       AUROC=0.920  HED=0.870</p>
+            <p>Linear Ramp          AUROC=0.900  HED=0.510</p>
+            <p>Step-Delayed         AUROC=0.910  HED=0.230</p>
+        </div>
+
+        <p>
+            <strong>Key insight:</strong> Identical AUROC range, completely different operational outcomes. HED separates them. AUC cannot.
+        </p>
+
+        <h3>Evaluating Your Own Model</h3>
+
+        <div class="code-block"><span class="code-keyword">from</span> hed <span class="code-keyword">import</span> hed_score
+
+<span class="code-comment"># Your model's probability output and known change point</span>
+prob_stream = your_model.predict_proba(X_test)[:, <span class="code-number">1</span>]
+known_onset = your_dataset.get_onset_index()
+
+<span class="code-comment"># Compute both metrics</span>
+hed = hed_score(prob_stream, t_star=known_onset, lam=<span class="code-number">0.10</span>)
+auc = auc_score(prob_stream, y_test)
+
+<span class="code-function">print</span>(<span class="code-string">f"AUROC = {auc:.4f}  |  HED = {hed:.4f}"</span>)
+<span class="code-function">print</span>(<span class="code-string">"Report both. They answer different questions."</span>)</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Key Concepts -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>Key Concepts</h2>
+
+        <h3>What HED Is Not</h3>
+
+        <p>
+            HED does not replace AUROC. This is important enough to state explicitly.
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Measures</th>
+                    <th>When to Use</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>AUROC</strong></td>
+                    <td>Ranking quality across thresholds</td>
+                    <td>Evaluating classification separability</td>
+                </tr>
+                <tr>
+                    <td><strong>F1 / Precision-Recall</strong></td>
+                    <td>Performance at a fixed threshold</td>
+                    <td>Evaluating at a chosen operating point</td>
+                </tr>
+                <tr>
+                    <td><strong>HED</strong></td>
+                    <td><strong>Temporal quality:</strong> how early, how confidently</td>
+                    <td><strong>Any system where detection latency has consequences</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="mt-8">
+            <strong>Report both AUROC and HED.</strong> They answer different questions. A system evaluated on only one gives you half the picture.
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Ecosystem & Citation -->
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 section">
+        <h2>Research Ecosystem</h2>
+
+        <p>
+            The HED Score is the foundation of a broader temporal evaluation ecosystem. Development includes:
+        </p>
+
+        <ul class="space-y-3 text-slate-700 ml-6 my-6">
+            <li><strong>Core metric:</strong> Stable, tested, production-ready via PyPI</li>
+            <li><strong>Benchmark suite:</strong> NSL-KDD, UNSW-NB15, CICIDS, synthetic regimes</li>
+            <li><strong>Companion architecture:</strong> PARD-SSM for cyber-attack regime detection</li>
+            <li><strong>Domain extensions:</strong> Physiological early-warning, ecological monitoring, financial surveillance</li>
+        </ul>
+
+        <p>
+            <strong>If you are working in a domain where detection latency carries real operational consequences and want to contribute to extending this framework, open an issue or reach out.</strong>
+        </p>
+
+        <div class="bg-slate-50 p-6 rounded border border-slate-200 my-8">
+            <p class="font-semibold text-slate-900 mb-2">Contributing</p>
+            <p class="text-slate-700 text-sm">
+                📬 <a href="mailto:prakulhiremath03@gmail.com" class="text-blue-600 hover:underline font-semibold">prakulhiremath03@gmail.com</a>
+            </p>
+            <p class="text-slate-700 text-sm mt-3">
+                We are organizing the first HED Contributors Summit to formally extend the framework across biological, physiological, and infrastructure domains.
+            </p>
+        </div>
+
+        <h2 class="mt-12">Citation</h2>
+
+        <p>If you use HED Score in your research, please cite:</p>
+
+        <div class="code-block text-xs">@article{hiremath2026hed,
+  author  = {Hiremath, Prakul Sunil},
+  title   = {The Hiremath Early Detection ({HED}) Score:
+             A Measure-Theoretic Evaluation Standard
+             for Temporal Intelligence},
+  journal = {arXiv preprint arXiv:2604.04993},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2604.04993}
+}</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Footer -->
+    <div class="bg-slate-50 border-t border-slate-200 py-12">
+        <div class="max-w-6xl mx-auto px-6 sm:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://arxiv.org/abs/2604.04993" class="text-blue-600 hover:underline" target="_blank" rel="noopener">arXiv Paper</a></li>
+                        <li><a href="https://pypi.org/project/hed-score/" class="text-blue-600 hover:underline" target="_blank" rel="noopener">PyPI Package</a></li>
+                        <li><a href="https://colab.research.google.com/drive/1NPeTQCfd7SG4AAtcRY1IIaw_f7U2VS_Z?usp=sharing" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Colab Notebook</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-4">Learn</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://medium.com/@prakulhiremath/the-temporal-blind-spot-in-model-evaluation-e63dda033960" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Medium Article</a></li>
+                        <li><a href="https://github.com/prakulhiremath/hed-score" class="text-blue-600 hover:underline" target="_blank" rel="noopener">GitHub Repository</a></li>
+                        <li><a href="https://zenodo.org/records/19713081" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Zenodo Archive</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-4">Contact</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="mailto:prakulhiremath03@gmail.com" class="text-blue-600 hover:underline">Email</a></li>
+                        <li><a href="https://twitter.com" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-200 pt-8">
+                <p class="text-sm text-slate-600 text-center mb-4">
+                    <strong>If your system operates in time and your evaluation framework does not,<br/>you are not measuring intelligence. You are measuring a photograph of it.</strong>
+                </p>
+                <p class="text-xs text-slate-500 text-center">
+                    HED Score — Hiremath Early Detection Score • Apache 2.0 License
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Lambda slider interactivity
+        const lambdaSlider = document.getElementById('lambda-slider');
+        const lambdaDisplay = document.getElementById('lambda-display');
+        const decayDisplays = {
+            5: document.getElementById('decay-5'),
+            10: document.getElementById('decay-10'),
+            20: document.getElementById('decay-20'),
+            40: document.getElementById('decay-40'),
+        };
+        const descriptionEl = document.getElementById('lambda-description');
+        const useCaseEl = document.getElementById('lambda-use-case');
+
+        const lambdaConfigs = {
+            0.01: {
+                desc: 'λ = 0.01 — Nearly uniform weighting',
+                useCase: 'Lenient. Suitable for slow-moving phenomena (e.g., ecological drift).',
+            },
+            0.03: {
+                desc: 'λ = 0.03 — Gentle discounting',
+                useCase: 'Biological systems with gradual transitions.',
+            },
+            0.05: {
+                desc: 'λ = 0.05 — Moderate penalty',
+                useCase: 'Suitable for epidemiological monitoring with longer intervention horizons.',
+            },
+            0.10: {
+                desc: 'λ = 0.10 — Balanced default',
+                useCase: 'Suitable for infrastructure and general anomaly detection.',
+            },
+            0.20: {
+                desc: 'λ = 0.20 — Aggressive discounting',
+                useCase: 'Suitable for financial surveillance and algorithmic trading regimes.',
+            },
+            0.30: {
+                desc: 'λ = 0.30 — Maximum urgency',
+                useCase: 'Suitable for cyber-physical security and intrusion detection systems.',
+            },
+        };
+
+        function updateLambda() {
+            const lambda = parseFloat(lambdaSlider.value);
+            lambdaDisplay.textContent = lambda.toFixed(2);
+
+            // Calculate decay weights
+            [5, 10, 20, 40].forEach(dt => {
+                const weight = Math.exp(-lambda * dt);
+                decayDisplays[dt].textContent = weight.toFixed(3);
+            });
+
+            // Update description based on closest config
+            let closest = 0.10;
+            Object.keys(lambdaConfigs).forEach(key => {
+                if (Math.abs(parseFloat(key) - lambda) < Math.abs(closest - lambda)) {
+                    closest = parseFloat(key);
+                }
+            });
+
+            const config = lambdaConfigs[closest] || lambdaConfigs[0.10];
+            descriptionEl.textContent = config.desc;
+            useCaseEl.textContent = config.useCase;
+        }
+
+        lambdaSlider.addEventListener('input', updateLambda);
+        updateLambda(); // Initialize
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Fade in animation on load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.animate-fade-in').forEach(el => {
+                el.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>
